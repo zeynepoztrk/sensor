@@ -42,19 +42,50 @@ uint8_t calculateAccConfigValue(GRange g, Bandwidth bw, OperationMode op) {
 }
 
 int main() {
-    // Konfigürasyon değerlerini struct içinde tanımlama
     AccConfig config;
-    config.g_range = G_4;            // ±4g
-    config.bandwidth = BW_125;       // 125 Hz
-    config.op_mode = MODE_NORMAL;    // Normal mode
+
+    int g_range_input, bandwidth_input, op_mode_input;
+
+    // Kullanıcıdan G range'i isteme
+    printf("G Range Seciniz (0: ±2g, 1: ±4g, 2: ±8g, 3: ±16g): ");
+    scanf("%d", &g_range_input);
+    if (g_range_input < 0 || g_range_input > 3) {
+        printf("Hatali G Range secimi!\n");
+        return 1;
+    }
+    config.g_range = (GRange)g_range_input;
+
+    // Kullanıcıdan Bandwidth isteme
+    printf("Bandwidth Seciniz (0: 7.81 Hz, 1: 15.63 Hz, 2: 31.25 Hz, 3: 62.5 Hz, 4: 125 Hz, 5: 250 Hz, 6: 500 Hz, 7: 1000 Hz): ");
+    scanf("%d", &bandwidth_input);
+    if (bandwidth_input < 0 || bandwidth_input > 7) {
+        printf("Hatali Bandwidth secimi!\n");
+        return 1;
+    }
+    config.bandwidth = (Bandwidth)bandwidth_input;
+
+    // Kullanıcıdan Operation Mode isteme
+    printf("Operation Mode Seciniz (0: Normal, 1: Suspend, 2: Low Power): ");
+    scanf("%d", &op_mode_input);
+    if (op_mode_input < 0 || op_mode_input > 2) {
+        printf("Hatali Operation Mode secimi!\n");
+        return 1;
+    }
+    config.op_mode = (OperationMode)op_mode_input;
 
     // AccConfigValue hesaplama
     config.AccConfigValue = calculateAccConfigValue(config.g_range, config.bandwidth, config.op_mode);
 
     // Sonuçları yazdırma
-    printf("AccConfigValue Decimal: %d\n", config.AccConfigValue);
-    printf("AccConfigValue Hexadecimal: 0x%X\n", config.AccConfigValue);
-    printf("AccConfigValue Binary: 0b");
+    printf("\nSecilen Ayarlar:\n");
+    printf("G Range: %d\n", g_range_input);
+    printf("Bandwidth: %d\n", bandwidth_input);
+    printf("Operation Mode: %d\n", op_mode_input);
+
+    printf("\nHesaplanan AccConfigValue:\n");
+    printf("Decimal: %d\n", config.AccConfigValue);
+    printf("Hexadecimal: 0x%X\n", config.AccConfigValue);
+    printf("Binary: 0b");
     for (int i = 7; i >= 0; i--) {
         printf("%d", (config.AccConfigValue >> i) & 1);
     }
